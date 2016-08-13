@@ -1,11 +1,12 @@
 Package: mystatcast
 Type: Package
-Title: Statcast datasets
+Title: Statcast Work
 Version: 0.10
 Date: 2016-08-12
 Author: Jim Albert
 Maintainer: Jim Albert <albert@bgsu.edu>
 LazyData: yes
-Description: mystatcast is a collection of data files collected from baseball.savant.com
+Depends: ggplot2, dplyr, mgcv
+Description: mystatcast is a collection of data files collected from baseball.savant.com and functions to work with this data.
 License: GPL (>= 2)
 Packaged: Wed May 28 19:11:23 2014; Jim Albert
