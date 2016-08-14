@@ -3,19 +3,24 @@ statcast_graphs <- function(df){
   df <- mutate(df,
                Outcome=ifelse(Event %in% 
                         c("Double", "Single", "Triple", "Home Run"), 
-                              "Hit", "Out"))
+                              "Hit", "Out"),
+               outcome=ifelse(Outcome=="Hit", 1, 0))
+  
+  # initial plot
+  
   p1 <- ggplot(df, aes(Launch_Angle, Exit_Velocity, color=Event)) + 
     geom_point() + ggtitle(paste(name, "- In-Play Outcomes")) 
   print(p1)
   
-  df <- mutate(df,
-               outcome=ifelse(Outcome=="Hit", 1, 0))
+  # fit gam
+  
   fit2 <- gam(outcome ~ s(Launch_Angle, Exit_Velocity),
               family=binomial, data=df)
   
   df <- mutate(df,
-               Prob_Hit = exp(predict(fit2)) / (1 + exp(predict(fit2))),
-               prob_5 = Prob_Hit > 0.5)
+          Prob_Hit = exp(predict(fit2)) / (1 + exp(predict(fit2))))
+  
+  # second plot showing fitted hit probabilities
   
   p2 <- ggplot(df, aes(x=Launch_Angle, y=Exit_Velocity, color=Prob_Hit)) +
     geom_point() +
@@ -36,6 +41,9 @@ statcast_graphs <- function(df){
   lp <- predict(fit2, data.predict)
   data.predict$Probability <- exp(lp) / (1 + exp(lp))
   data.predict$Exit_Velocity <- factor(data.predict$Exit_Velocity)
+  
+  # third plot showing probability of hit as function of
+  # launch angle
   
   p3 <- ggplot(data.predict, 
                aes(Launch_Angle, Probability, 
